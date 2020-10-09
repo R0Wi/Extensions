@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Leviasan.Extension.EPPlus</name>
+    </assembly>
+    <members>
+        <member name="T:OfficeOpenXml.Data.Annotations.GroupingAttribute">
+            <summary>
+            Represents the grouping property in table data.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.GroupingAttribute.Collapsed">
+            <summary>
+            Is row collapsed. By default is true.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.GroupingAttribute.OutlineLevel">
+            <summary>
+            The nesting level. By default is 1.
+            </summary>
+        </member>
+        <member name="T:OfficeOpenXml.Data.Annotations.HyperlinkAttribute">
+            <summary>
+            Represents the hyperlink property in table data.
+            </summary>
+        </member>
+        <member name="M:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:OfficeOpenXml.Data.Annotations.HyperlinkAttribute"/> class with current property. The property <see cref="P:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.AllowInsertValue"/> by default is true.
+            </summary>
+        </member>
+        <member name="M:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of <see cref="T:OfficeOpenXml.Data.Annotations.HyperlinkAttribute"/> class with specified property name that value is set how hyperlink. 
+            Also sets the value in next column if <see cref="P:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.AllowInsertValue"/> is true. 
+            </summary>
+            <param name="property">The name of the property where need set the value how hyperlink.</param>
+            <param name="allowInsertValue">Is sets the value in the next column.</param>
+            <exception cref="T:System.ArgumentException">Property is null, empty, or consists only of white-space characters.</exception>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.AllowInsertValue">
+            <summary>
+            Is sets the value in the next column.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.Property">
+            <summary>
+            The name of the property where need set the value how hyperlink.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.HyperlinkAttribute.StyleName">
+            <summary>
+            The hyperlink style name.
+            </summary>
+        </member>
+        <member name="T:OfficeOpenXml.Data.Annotations.NumberformatAttribute">
+            <summary>
+            Represents a data format in which the value will be displayed.
+            </summary>
+        </member>
+        <member name="M:OfficeOpenXml.Data.Annotations.NumberformatAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:OfficeOpenXml.Data.Annotations.NumberformatAttribute"/> class with specified format.
+            </summary>
+            <param name="format">The data format in which the value will be displayed.</param>
+            <exception cref="T:System.ArgumentException">Property is null, empty, or consists only of white-space characters.</exception>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.NumberformatAttribute.Format">
+            <summary>
+            The data format in which the value will be displayed.
+            </summary>
+        </member>
+        <member name="T:OfficeOpenXml.Data.Annotations.RangeStyleAttribute">
+            <summary>
+            Represents the style of range.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.RangeStyleAttribute.FontSize">
+            <summary>
+            The size of the font. By gefault: 11.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.RangeStyleAttribute.WrapText">
+            <summary>
+            Wrap the text.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.RangeStyleAttribute.VerticalAlignment">
+            <summary>
+            The vertical alignment in the cell.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Data.Annotations.RangeStyleAttribute.HorizontalAlignment">
+            <summary>
+            The horizontal alignment in the cell.
+            </summary>
+        </member>
+        <member name="T:OfficeOpenXml.EPPlusConstants">
+            <summary>
+            EPPlus library additional constants value.
+            </summary>
+        </member>
+        <member name="F:OfficeOpenXml.EPPlusConstants.ContentType">
+            <summary>
+            Excel content type.
+            </summary>
+        </member>
+        <member name="F:OfficeOpenXml.EPPlusConstants.Extension">
+            <summary>
+            Excel extensions.
+            </summary>
+        </member>
+        <member name="T:OfficeOpenXml.ExcelWorksheetExtensions">
+            <summary>
+            The excel worksheet extension methods.
+            </summary>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.LoadFromDictionary(OfficeOpenXml.ExcelWorksheet,System.Collections.Generic.IDictionary{System.String,System.Object},System.IFormatProvider)">
+            <summary>
+            Loads a dictionary value into a worksheet into a range that contains a dictionary key.
+            </summary>
+            <param name="worksheet">The excel worksheet.</param>
+            <param name="dictionary">The dictionary with value.</param>
+            <param name="provider"><see cref="T:System.Globalization.CultureInfo"/> provider.</param>
+            <exception cref="T:System.ArgumentNullException">Worksheet or dictionary is null.</exception>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.LoadFromDictionary(OfficeOpenXml.ExcelWorksheet,System.Object,System.IFormatProvider)">
+            <summary>
+            Loads a object into a worksheet into a range that contains a [property name].
+            </summary>
+            <param name="worksheet">The excel worksheet.</param>
+            <param name="value">The object.</param>
+            <param name="provider"><see cref="T:System.Globalization.CultureInfo"/> provider.</param>
+            <exception cref="T:System.ArgumentNullException">Worksheet or dictionary is null.</exception>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.LoadFromCollection``1(OfficeOpenXml.ExcelWorksheet,System.String,System.Collections.Generic.IEnumerable{``0},System.Boolean,OfficeOpenXml.Table.TableStyles,System.IFormatProvider)">
+            <summary>
+            Loads a collection into a worksheet starting from the top left row of the range that contains keyword.
+            </summary>
+            <typeparam name="T">The type of data.</typeparam>
+            <param name="worksheet">The excel worksheet.</param>
+            <param name="keyword">The keyword to search in the worksheet to determine the starting position.</param>
+            <param name="collection">The data.</param>
+            <param name="printHeaders">Print the property names on the first row. If the property is decorated with a <see cref="T:System.ComponentModel.DisplayNameAttribute"/> or a <see cref="T:System.ComponentModel.DescriptionAttribute"/> that attribute will be used instead of the reflected member name.</param>
+            <param name="tableStyles">Will create a table with this style.</param>
+            <param name="provider"><see cref="T:System.Globalization.CultureInfo"/> provider.</param>
+            <exception cref="T:System.ArgumentException">Keyword is null, empty, or consists only of white-space characters.</exception>
+            <exception cref="T:System.ArgumentNullException">Worksheet or collection is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Keyword is not found in excel worksheet.</exception>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.LoadFromCollection``1(OfficeOpenXml.ExcelWorksheet,System.Int32,System.Int32,System.Collections.Generic.IEnumerable{``0},System.Boolean,OfficeOpenXml.Table.TableStyles,System.IFormatProvider)">
+            <summary>
+            Load a collection into a worksheet starting from the top left row of the range.
+            </summary>
+            <typeparam name="T">The type of data.</typeparam>
+            <param name="worksheet">The excel worksheet.</param>
+            <param name="startRow">The start number row.</param>
+            <param name="startColumn">The start number column.</param>
+            <param name="collection">The data.</param>
+            <param name="printHeaders">Print the property names on the first row. If the property is decorated with a <see cref="T:System.ComponentModel.DisplayNameAttribute"/> or a <see cref="T:System.ComponentModel.DescriptionAttribute"/> that attribute will be used instead of the reflected member name.</param>
+            <param name="tableStyles">Will create a table with this style.</param>
+            <param name="provider"><see cref="T:System.Globalization.CultureInfo"/> provider.</param>
+            <exception cref="T:System.ArgumentNullException">Worksheet or collection is null.</exception>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.FormatKey(System.String)">
+            <summary>
+            Gets string that represent the key.
+            </summary>
+            <param name="value">The key value.</param>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.SetExcelRangeValue(OfficeOpenXml.ExcelRangeBase,System.Reflection.PropertyInfo,System.Object,System.IFormatProvider)">
+            <summary>
+            Sets the value in the specified excel range.
+            </summary>
+            <param name="range">A range of cells.</param>
+            <param name="property">Property metadata.</param>
+            <param name="value">The value.</param>
+            <param name="provider"><see cref="T:System.Globalization.CultureInfo"/> provider.</param>
+        </member>
+        <member name="M:OfficeOpenXml.ExcelWorksheetExtensions.SetExcelRangeValue(OfficeOpenXml.ExcelRangeBase,System.String,System.Object,System.Boolean,System.IFormatProvider)">
+            <summary>
+            Sets the value in the specified excel range.
+            </summary>
+            <param name="range">A range of cells.</param>
+            <param name="key">The key.</param>
+            <param name="value">The value.</param>
+            <param name="styleDefinition">If needs to definition the style set true, overwise, false.</param>
+            <param name="provider"><see cref="T:System.Globalization.CultureInfo"/> provider.</param>
+        </member>
+        <member name="T:OfficeOpenXml.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Properties.Resources.KeywordNotFoundException">
+            <summary>
+              Looks up a localized string similar to Worksheet {0} does not consists a keyword: [{1}]..
+            </summary>
+        </member>
+        <member name="P:OfficeOpenXml.Properties.Resources.StringIsMissing">
+            <summary>
+              Looks up a localized string similar to String can not be null, empty, or consists only of white-space characters..
+            </summary>
+        </member>
+    </members>
+</doc>
