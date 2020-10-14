@@ -3,9 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leviasan.Extension.EPPlus", "Leviasan.Extension.EPPlus\Leviasan.Extension.EPPlus.csproj", "{FF830024-72C2-4D9E-B9AC-F83E365B526C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leviasan.Extension.EPPlus", "Leviasan.Extension.EPPlus\Leviasan.Extension.EPPlus.csproj", "{FF830024-72C2-4D9E-B9AC-F83E365B526C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leviasan.Extension.DocumentFormat", "Leviasan.Extension.DocumentFormat\Leviasan.Extension.DocumentFormat.csproj", "{086ECEE9-A1AC-4D9B-8400-074EB0BA1A4C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E7D38C2-E88D-4470-BED6-41EC7A5158EA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Leviasan.Extension.DocumentFormat.OpenXml", "Leviasan.Extension.DocumentFormat.OpenXml\Leviasan.Extension.DocumentFormat.OpenXml.csproj", "{F417336C-9CED-4EB6-A003-EEAC821E785B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +24,10 @@ Global
 		{FF830024-72C2-4D9E-B9AC-F83E365B526C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF830024-72C2-4D9E-B9AC-F83E365B526C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF830024-72C2-4D9E-B9AC-F83E365B526C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{086ECEE9-A1AC-4D9B-8400-074EB0BA1A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{086ECEE9-A1AC-4D9B-8400-074EB0BA1A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{086ECEE9-A1AC-4D9B-8400-074EB0BA1A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{086ECEE9-A1AC-4D9B-8400-074EB0BA1A4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F417336C-9CED-4EB6-A003-EEAC821E785B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F417336C-9CED-4EB6-A003-EEAC821E785B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F417336C-9CED-4EB6-A003-EEAC821E785B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F417336C-9CED-4EB6-A003-EEAC821E785B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

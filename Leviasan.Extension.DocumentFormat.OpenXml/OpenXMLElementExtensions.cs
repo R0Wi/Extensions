@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace WebAPI.Helpers
+namespace DocumentFormat.OpenXml
 {
     /// <summary>
     /// The Open XML extensions methods.

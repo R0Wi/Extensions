@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace WebAPI.Helpers
+namespace DocumentFormat.OpenXml
 {
     /// <summary>
     /// Represents the service that worked with OpenXML bookmarks.

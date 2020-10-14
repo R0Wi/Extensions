@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using OfficeOpenXml.Data.Annotations;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
-using OfficeOpenXml.Data.Annotations;
 
 namespace OfficeOpenXml
 {
