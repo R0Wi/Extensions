@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Leviasan.Extension.DocumentFormat.OpenXml</name>
+    </assembly>
+    <members>
+        <member name="T:DocumentFormat.OpenXml.OpenXmlBookmarkHelper">
+            <summary>
+            Represents the service that working with OpenXML bookmarks.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.GetDocumentBookmarkValues(DocumentFormat.OpenXml.Packaging.WordprocessingDocument,System.Boolean,System.IFormatProvider)">
+            <summary>
+            Gets the all document bookmarks values.
+            </summary>
+            <param name="document"></param>
+            <param name="includeHiddenBookmarks"></param>
+            <param name="provider"></param>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:DocumentFormat.OpenXml.Packaging.WordprocessingDocument"/> is null.</exception>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.SetDocumentBookmarkValues(DocumentFormat.OpenXml.Packaging.WordprocessingDocument,System.Collections.Generic.IDictionary{System.String,System.String},System.IFormatProvider)">
+            <summary>
+            Sets the values into the document bookmarks.
+            </summary>
+            <param name="document"></param>
+            <param name="bookmarkValues"></param>
+            <param name="provider"></param>
+            <exception cref="T:System.ArgumentNullException">The document or dictionary is null.</exception>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.GetValue(DocumentFormat.OpenXml.Wordprocessing.BookmarkStart,System.IFormatProvider)">
+            <summary>
+            Gets the value from the bookmark.
+            </summary>
+            <param name="bookmark"></param>
+            <param name="provider"></param>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart"/> is null.</exception>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.SetValue(DocumentFormat.OpenXml.Wordprocessing.BookmarkStart,System.String,System.IFormatProvider)">
+            <summary>
+            Sets the value into the bookmark.
+            </summary>
+            <param name="bookmark"></param>
+            <param name="value"></param>
+            <param name="provider"></param>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart"/> is null.</exception>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.GetAllBookmarks(DocumentFormat.OpenXml.Packaging.WordprocessingDocument)">
+            <summary>
+            Gets all bookmarks in document.
+            </summary>
+            <param name="document"></param>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.IsHiddenBookmark(System.String)">
+            <summary>
+            Is hidden bookmark The hidden bookmark name starts with '_'.
+            </summary>
+            <param name="bookmarkName">The bookmark name.</param>
+            <returns>Return true if the bookmark is hidden, otherwise false.</returns>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlBookmarkHelper.SetBookmarkValue(DocumentFormat.OpenXml.Wordprocessing.BookmarkStart,System.Collections.Generic.IDictionary{System.String,System.String},System.IFormatProvider)">
+            <summary>
+            Sets the value to bookmark.
+            </summary>
+            <param name="bookmark"></param>
+            <param name="bookmarkValues"></param>
+            <param name="provider"></param>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.OpenXmlElementExtensions">
+            <summary>
+            The Open XML extensions methods.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlElementExtensions.GetFirstDescendant``1(DocumentFormat.OpenXml.OpenXmlElement)">
+            <summary>
+            Gets the first descendant.
+            </summary>
+            <typeparam name="T">The element type.</typeparam>
+            <param name="parent"></param>
+            <returns>If a descendant is found return it, otherwise, return null.</returns>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:DocumentFormat.OpenXml.OpenXmlElement"/> is null.</exception>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlElementExtensions.IsEndBookmark(DocumentFormat.OpenXml.OpenXmlElement,DocumentFormat.OpenXml.Wordprocessing.BookmarkStart)">
+            <summary>
+            Is the end of the bookmark.
+            </summary>
+            <param name="element"></param>
+            <param name="startBookmark">The start of the bookmark element.</param>
+            <returns>If it is the end of the bookmark return true. If element is not <see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd"/> or it is not the end of the bookmark return false.</returns>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart"/> is null.</exception>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.OpenXmlElementExtensions.IsEndBookmark(DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd,DocumentFormat.OpenXml.Wordprocessing.BookmarkStart)">
+            <summary>
+            Is the end of the bookmark.
+            </summary>
+            <param name="endBookmark">The end of the bookmark element.</param>
+            <param name="startBookmark">The start of the bookmark element.</param>
+            <exception cref="T:System.ArgumentNullException">The <see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkStart"/> is null.</exception>
+            <returns>If it is the end of the bookmark return true. If element is not <see cref="T:DocumentFormat.OpenXml.Wordprocessing.BookmarkEnd"/> or it is not the end of the bookmark return false.</returns>
+        </member>
+        <member name="T:DocumentFormat.OpenXml.WordDocumentEditor">
+            <summary>
+            Represents the word document editor.
+            </summary>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.WordDocumentEditor.SetDocumentBookmarkValues(System.Byte[],System.Collections.Generic.IDictionary{System.String,System.String},System.IFormatProvider)">
+            <summary>
+            Builds the document from the template with bookmarks.
+            </summary>
+            <param name="content">The docx template file.</param>
+            <param name="bookmarkValues">The bookmark values.</param>
+            <param name="provider">The culture info.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when one of the parameters: content or bookmarkValues is null or empty.</exception>
+            <exception cref="T:DocumentFormat.OpenXml.Packaging.OpenXmlPackageException">Thrown when the package is not valid Open XML WordprocessingDocument.</exception>
+            <returns>The content with mimetype: application/vnd.openxmlformats-officedocument.wordprocessingml.document</returns>
+        </member>
+        <member name="M:DocumentFormat.OpenXml.WordDocumentEditor.GetDocumentBookmarkValues(System.Byte[],System.IFormatProvider)">
+            <summary>
+            Gets the all document bookmarks values.
+            </summary>
+            <param name="content">The docx template file.</param>
+            <param name="provider">The culture info.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when one of the parameters: content or bookmarkValues is null or empty.</exception>
+            <exception cref="T:DocumentFormat.OpenXml.Packaging.OpenXmlPackageException">Thrown when the package is not valid Open XML WordprocessingDocument.</exception>
+        </member>
+    </members>
+</doc>

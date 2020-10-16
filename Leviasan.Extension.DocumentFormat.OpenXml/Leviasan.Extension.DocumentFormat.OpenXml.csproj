@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>DocumentFormat.OpenXml</RootNamespace>
     <Authors>Leviasan</Authors>
-    <Description>The service that working with OpenXML bookmarks.</Description>
+    <Description>The helper classes that working with OpenXML bookmarks.</Description>
     <PackageProjectUrl>https://github.com/Leviasan/Extensions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Leviasan/Extensions</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
@@ -13,6 +13,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.0.1</Version>
     <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>.\Properties\Leviasan.Extension.DocumentFormat.OpenXml.xml</DocumentationFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>.\Properties\Leviasan.Extension.DocumentFormat.OpenXml.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
