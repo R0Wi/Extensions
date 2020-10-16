@@ -8,20 +8,18 @@ using DocumentFormat.OpenXml.Wordprocessing;
 namespace DocumentFormat.OpenXml
 {
     /// <summary>
-    /// Represents the service that worked with OpenXML bookmarks.
+    /// Represents the service that working with OpenXML bookmarks.
     /// </summary>
-    /// <remarks>
-    /// Based on: https://gist.github.com/pgrm/5034752
-    /// </remarks>
-    public class OpenXMLBookmarkHelper
+    public static class OpenXmlBookmarkHelper
     {
         /// <summary>
         /// Gets the all document bookmarks values.
         /// </summary>
         /// <param name="document"></param>
         /// <param name="includeHiddenBookmarks"></param>
+        /// <param name="provider"></param>
         /// <exception cref="ArgumentNullException">The <see cref="WordprocessingDocument"/> is null.</exception>
-        public IDictionary<string, string> GetDocumentBookmarkValues(WordprocessingDocument document, bool includeHiddenBookmarks = false)
+        public static IDictionary<string, string> GetDocumentBookmarkValues(WordprocessingDocument document, bool includeHiddenBookmarks = false, IFormatProvider provider = default)
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
@@ -30,7 +28,7 @@ namespace DocumentFormat.OpenXml
             foreach (var bookmark in GetAllBookmarks(document))
             {
                 if (includeHiddenBookmarks || !IsHiddenBookmark(bookmark.Name))
-                    bookmarks[bookmark.Name] = GetText(bookmark);
+                    bookmarks[bookmark.Name] = GetValue(bookmark, provider);
             }
             return bookmarks;
         }
@@ -41,7 +39,7 @@ namespace DocumentFormat.OpenXml
         /// <param name="bookmarkValues"></param>
         /// <param name="provider"></param>
         /// <exception cref="ArgumentNullException">The document or dictionary is null.</exception>
-        public void SetDocumentBookmarkValues(WordprocessingDocument document, IDictionary<string, string> bookmarkValues, IFormatProvider provider = default)
+        public static void SetDocumentBookmarkValues(WordprocessingDocument document, IDictionary<string, string> bookmarkValues, IFormatProvider provider = default)
         {
             if (document == null)
                 throw new ArgumentNullException(nameof(document));
@@ -52,62 +50,142 @@ namespace DocumentFormat.OpenXml
                 SetBookmarkValue(bookmark, bookmarkValues, provider);
         }
         /// <summary>
-        /// Sets the text into the bookmark.
+        /// Gets the value from the bookmark.
+        /// </summary>
+        /// <param name="bookmark"></param>
+        /// <param name="provider"></param>
+        /// <exception cref="ArgumentNullException">The <see cref="BookmarkStart"/> is null.</exception>
+        public static string GetValue(BookmarkStart bookmark, IFormatProvider provider = default)
+        {
+            if (bookmark == null)
+                throw new ArgumentNullException(nameof(bookmark));
+
+            var formFieldData = bookmark.Parent
+                .Descendants<FormFieldData>()
+                .FirstOrDefault(x => x.ChildElements
+                    .Any(el => el is FormFieldName formFieldName && string.Equals(formFieldName.Val.Value, bookmark.Name, StringComparison.OrdinalIgnoreCase)));
+
+            if (formFieldData != null)
+            {
+                var checkbox = formFieldData.GetFirstDescendant<DefaultCheckBoxFormFieldState>();
+                if (checkbox != null)
+                    return Convert.ToString(checkbox.Val.Value, provider);
+            }
+
+            var separate = bookmark.Parent.Descendants<FieldChar>().FirstOrDefault(x => x.FieldCharType == FieldCharValues.Separate && x.IsAfter(bookmark));
+            var nextSibling = separate.Parent;
+            while (nextSibling != null)
+            {
+                if (nextSibling.IsEndBookmark(bookmark))
+                    break;
+
+                var next = nextSibling.NextSibling();
+                if (nextSibling.IsAfter(separate))
+                {
+                    if (nextSibling.ChildElements.Any(x => x.GetType().Equals(typeof(Text))))
+                    {
+                        var text = nextSibling.GetFirstChild<Text>();
+                        return text.Text;
+                    }
+                }
+                nextSibling = next;
+            }
+
+            return null;
+        }
+        /// <summary>
+        /// Sets the value into the bookmark.
         /// </summary>
         /// <param name="bookmark"></param>
         /// <param name="value"></param>
         /// <param name="provider"></param>
         /// <exception cref="ArgumentNullException">The <see cref="BookmarkStart"/> is null.</exception>
-        public void SetText(BookmarkStart bookmark, string value, IFormatProvider provider = default)
+        public static void SetValue(BookmarkStart bookmark, string value, IFormatProvider provider = default)
         {
             if (bookmark == null)
                 throw new ArgumentNullException(nameof(bookmark));
 
-            var text = FindBookmarkText(bookmark);
-            if (text != null)
+            var formFieldData = bookmark.Parent
+                .Descendants<FormFieldData>()
+                .FirstOrDefault(x => x.ChildElements
+                    .Any(el => el is FormFieldName formFieldName && string.Equals(formFieldName.Val.Value, bookmark.Name, StringComparison.OrdinalIgnoreCase)));
+
+            if (formFieldData != null)
             {
-                text.Text = value;
-                RemoveOtherTexts(bookmark, text);
-            }
-            else
-            {
-                var checkBox = FindBookmarkCheckBox(bookmark);
-                if (checkBox != null)
+                // TextInput
+                var textInput = formFieldData.GetFirstDescendant<TextInput>();
+                if (textInput != null)
                 {
-                    var state = checkBox.GetFirstDescendant<DefaultCheckBoxFormFieldState>();
-                    state.Val = new OnOffValue(bool.TryParse(value, out var result)
+                    // Get default value from bookmark if the settable value is null
+                    if (value == null)
+                    {
+                        var defaultValue = formFieldData.GetFirstDescendant<DefaultTextBoxFormFieldString>();
+                        if (defaultValue != null && defaultValue.Val.HasValue)
+                            value = defaultValue.Val.Value;
+                    }
+
+                    // Formating datetime string
+                    var format = formFieldData.GetFirstDescendant<Format>();
+                    var formFieldType = formFieldData.GetFirstDescendant<TextBoxFormFieldType>();
+                    if (formFieldType != null && format != null && formFieldType.Val.Value == TextBoxFormFieldValues.Date && !string.IsNullOrWhiteSpace(value))
+                    {
+                        var datetime = DateTime.Parse(value, CultureInfo.InvariantCulture);
+                        value = format.Val.HasValue
+                            ? datetime.ToString(format.Val.Value, provider)
+                            : value;
+                    }
+
+                    // Enforce max length.
+                    var maxLength = formFieldData.GetFirstDescendant<MaxLength>();
+                    if (maxLength != null && maxLength.Val.HasValue)
+                        value = value.Substring(0, maxLength.Val.Value);
+
+                    // Removes other empty run elements after separate
+                    var separate = bookmark.Parent.Descendants<FieldChar>().FirstOrDefault(x => x.FieldCharType == FieldCharValues.Separate && x.IsAfter(bookmark));
+                    var nextSibling = separate.Parent;
+                    RunProperties runProperties = null;
+                    while (nextSibling != null)
+                    {
+                        if (nextSibling.IsEndBookmark(bookmark))
+                            break;
+
+                        var next = nextSibling.NextSibling();
+                        if (nextSibling.IsAfter(separate))
+                        {
+                            if (nextSibling.ChildElements.Any(x => x.GetType().Equals(typeof(Text))))
+                            {
+                                if (runProperties == null)
+                                    runProperties = nextSibling.GetFirstChild<RunProperties>().Clone() as RunProperties;
+
+                                nextSibling.Remove();
+                            }
+                        }
+                        nextSibling = next;
+                    }
+                    // Set value
+                    var end = bookmark.Parent.Descendants<FieldChar>().FirstOrDefault(x => x.FieldCharType == FieldCharValues.End && x.IsAfter(bookmark)).Parent;
+                    var text = new Text(value);
+                    var run = new Run(runProperties, text);
+                    bookmark.Parent.InsertBefore(run, end);
+                    return;
+                }
+                // Checkbox
+                var checkbox = formFieldData.GetFirstDescendant<DefaultCheckBoxFormFieldState>();
+                if (checkbox != null)
+                {
+                    checkbox.Val = new OnOffValue(bool.TryParse(value, out var result)
                         ? result
                         : Convert.ToBoolean(Convert.ToInt32(value, provider), provider));
-                }
-                else
-                {
-                    InsertBookmarkText(bookmark, value, provider);
+                    return;
                 }
             }
-        }
-        /// <summary>
-        /// Gets the text from the bookmark.
-        /// </summary>
-        /// <param name="bookmark"></param>
-        /// <exception cref="ArgumentNullException">The <see cref="BookmarkStart"/> is null.</exception>
-        public string GetText(BookmarkStart bookmark)
-        {
-            if (bookmark == null)
-                throw new ArgumentNullException(nameof(bookmark));
-
-            var text = FindBookmarkText(bookmark);
-
-            if (text != null)
-                return text.Text;
-            else
-                return string.Empty;
         }
 
         /// <summary>
         /// Gets all bookmarks in document.
         /// </summary>
         /// <param name="document"></param>
-        private IEnumerable<BookmarkStart> GetAllBookmarks(WordprocessingDocument document)
+        private static IEnumerable<BookmarkStart> GetAllBookmarks(WordprocessingDocument document)
         {
             return document.MainDocumentPart.RootElement.Descendants<BookmarkStart>();
         }
@@ -116,7 +194,7 @@ namespace DocumentFormat.OpenXml
         /// </summary>
         /// <param name="bookmarkName">The bookmark name.</param>
         /// <returns>Return true if the bookmark is hidden, otherwise false.</returns>
-        private bool IsHiddenBookmark(string bookmarkName)
+        private static bool IsHiddenBookmark(string bookmarkName)
         {
             return bookmarkName?.StartsWith("_", StringComparison.OrdinalIgnoreCase) ?? false;
         }
@@ -126,128 +204,10 @@ namespace DocumentFormat.OpenXml
         /// <param name="bookmark"></param>
         /// <param name="bookmarkValues"></param>
         /// <param name="provider"></param>
-        private void SetBookmarkValue(BookmarkStart bookmark, IDictionary<string, string> bookmarkValues, IFormatProvider provider = default)
+        private static void SetBookmarkValue(BookmarkStart bookmark, IDictionary<string, string> bookmarkValues, IFormatProvider provider = default)
         {
             if (bookmarkValues.TryGetValue(bookmark.Name, out var value))
-                SetText(bookmark, value, provider);
-        }
-        /// <summary>
-        /// Finds the first OpenXML text element in the bookmark.
-        /// </summary>
-        /// <param name="bookmark"></param>
-        private Text FindBookmarkText(BookmarkStart bookmark)
-        {
-            if (bookmark.ColumnFirst != null)
-            {
-                return FindTextInColumn(bookmark);
-            }
-            else
-            {
-                var run = bookmark.NextSibling<Run>();
-                if (run != null)
-                {
-                    return run.GetFirstChild<Text>();
-                }
-                else
-                {
-                    Text text = null;
-                    var nextSibling = bookmark.NextSibling();
-                    while (text == null && nextSibling != null)
-                    {
-                        if (nextSibling.IsEndBookmark(bookmark))
-                            return null;
-
-                        text = nextSibling.GetFirstDescendant<Text>();
-                        nextSibling = nextSibling.NextSibling();
-                    }
-                    return text;
-                }
-            }
-        }
-        /// <summary>
-        /// Finds the first OpenXML checkbox element in the bookmark.
-        /// </summary>
-        /// <param name="bookmark"></param>
-        /// <returns></returns>
-        private CheckBox FindBookmarkCheckBox(BookmarkStart bookmark)
-        {
-            var run = bookmark.NextSibling<Run>();
-            if (run != null)
-            {
-                var formFieldData = bookmark.Parent.Descendants<FormFieldData>().First(x => x.ChildElements.Any(el => el is FormFieldName formFieldName && formFieldName.Val.Value == bookmark.Name));
-                return formFieldData.GetFirstDescendant<CheckBox>();
-            }
-            return null;
-        }
-        /// <summary>
-        /// Gets the first OpenXML text element in last cell in the bookmark column.
-        /// </summary>
-        /// <param name="bookmark"></param>
-        private Text FindTextInColumn(BookmarkStart bookmark)
-        {
-            var cell = bookmark.GetParent<TableRow>().GetFirstChild<TableCell>();
-            for (var i = 0; i < bookmark.ColumnFirst; i++)
-                cell = cell.NextSibling<TableCell>();
-
-            return cell.GetFirstDescendant<Text>();
-        }
-        /// <summary>
-        /// Removes other OpenXML text elements in the bookmark.
-        /// </summary>
-        /// <param name="bookmark"></param>
-        /// <param name="keep"></param>
-        private void RemoveOtherTexts(BookmarkStart bookmark, Text keep)
-        {
-            if (bookmark.ColumnFirst != null)
-                return;
-
-            Text text = null;
-            var nextSibling = bookmark.NextSibling();
-            while (text == null && nextSibling != null)
-            {
-                if (nextSibling.IsEndBookmark(bookmark))
-                    break;
-                foreach (var item in nextSibling.Descendants<Text>())
-                {
-                    if (item != keep)
-                        item.Remove();
-                }
-                nextSibling = nextSibling.NextSibling();
-            }
-        }
-        /// <summary>
-        /// Inserts the text into the bookmark.
-        /// </summary>
-        /// <param name="bookmark"></param>
-        /// <param name="value"></param>
-        /// <param name="provider"></param>
-        private void InsertBookmarkText(BookmarkStart bookmark, string value, IFormatProvider provider = default)
-        {
-            if (bookmark.NextSibling() is Run nextSubling)
-            {
-                var formFieldData = bookmark.Parent.Descendants<FormFieldData>().First(x => x.ChildElements.Any(el => el is FormFieldName formFieldName && formFieldName.Val.Value == bookmark.Name));
-                var formFieldType = formFieldData?.GetFirstDescendant<TextBoxFormFieldType>();
-                var format = formFieldData?.GetFirstDescendant<Format>();
-
-                var text = value;
-                if (formFieldType != null && format != null && formFieldType.Val.Value == TextBoxFormFieldValues.Date && !string.IsNullOrWhiteSpace(text))
-                {
-                    var datetime = DateTime.Parse(value, CultureInfo.InvariantCulture);
-                    text = format.Val.HasValue
-                        ? datetime.ToString(format.Val.Value, provider)
-                        : value;
-                }
-
-                var run = new Run();
-                var runProperties = nextSubling.Descendants<RunProperties>().FirstOrDefault()?.CloneNode(true);
-                if (runProperties != null)
-                    run.AppendChild(runProperties);
-                run.AppendChild(new Text(text));
-
-                var bookmarkEnd = bookmark.Parent.Descendants<BookmarkEnd>().First(x => x.Id == bookmark.Id);
-                bookmark.Parent.InsertBefore(run, bookmarkEnd);
-                RemoveOtherTexts(bookmark, run.GetFirstChild<Text>());
-            }
+                SetValue(bookmark, value, provider);
         }
     }
 }

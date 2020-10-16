@@ -7,7 +7,7 @@ namespace DocumentFormat.OpenXml
     /// <summary>
     /// The Open XML extensions methods.
     /// </summary>
-    public static class OpenXMLElementExtensions
+    internal static class OpenXmlElementExtensions
     {
         /// <summary>
         /// Gets the first descendant.
@@ -22,26 +22,6 @@ namespace DocumentFormat.OpenXml
                 throw new ArgumentNullException(nameof(parent));
 
             return parent.Descendants<T>()?.FirstOrDefault();
-        }
-        /// <summary>
-        /// Gets the parent.
-        /// </summary>
-        /// <typeparam name="T">The element type.</typeparam>
-        /// <param name="child"></param>
-        /// <returns>if a parent is found return it, otherwise, return null.</returns>
-        /// <exception cref="ArgumentNullException">The <see cref="OpenXmlElement"/> is null.</exception>
-        public static T GetParent<T>(this OpenXmlElement child) where T : OpenXmlElement
-        {
-            if (child == null)
-                throw new ArgumentNullException(nameof(child));
-
-            while (child != null)
-            {
-                child = child.Parent;
-                if (child is T)
-                    return (T)child;
-            }
-            return null;
         }
         /// <summary>
         /// Is the end of the bookmark.
