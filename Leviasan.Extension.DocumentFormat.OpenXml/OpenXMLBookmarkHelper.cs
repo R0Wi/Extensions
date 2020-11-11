@@ -129,10 +129,23 @@ namespace DocumentFormat.OpenXml
                     var formFieldType = formFieldData.GetFirstDescendant<TextBoxFormFieldType>();
                     if (formFieldType != null && format != null && formFieldType.Val.Value == TextBoxFormFieldValues.Date && !string.IsNullOrWhiteSpace(value))
                     {
-                        var datetime = DateTime.Parse(value, CultureInfo.InvariantCulture);
-                        value = format.Val.HasValue
-                            ? datetime.ToString(format.Val.Value, provider)
-                            : value;
+
+                        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var datetimeInvariant))
+                        {
+                            value = format.Val.HasValue
+                                ? datetimeInvariant.ToString(format.Val.Value, CultureInfo.InvariantCulture)
+                                : value;
+                        }
+                        else if (DateTime.TryParse(value, provider, DateTimeStyles.None, out var datetimeCurrent))
+                        {
+                            value = format.Val.HasValue
+                                ? datetimeCurrent.ToString(format.Val.Value, provider)
+                                : value;
+                        }
+                        else
+                        {
+                            throw new FormatException("A string that represents the datetime does not contain a valid string representation of a date and time or using an invalid format provider.");
+                        }
                     }
 
                     // Enforce max length.
