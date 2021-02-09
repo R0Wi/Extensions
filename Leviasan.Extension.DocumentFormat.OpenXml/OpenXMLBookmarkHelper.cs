@@ -129,14 +129,8 @@ namespace DocumentFormat.OpenXml
                     var formFieldType = formFieldData.GetFirstDescendant<TextBoxFormFieldType>();
                     if (formFieldType != null && format != null && formFieldType.Val.Value == TextBoxFormFieldValues.Date && !string.IsNullOrWhiteSpace(value))
                     {
-
-                        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var datetimeInvariant))
-                        {
-                            value = format.Val.HasValue
-                                ? datetimeInvariant.ToString(format.Val.Value, CultureInfo.InvariantCulture)
-                                : value;
-                        }
-                        else if (DateTime.TryParse(value, provider, DateTimeStyles.None, out var datetimeCurrent))
+                        // Try convert with specified format provider
+                        if (DateTime.TryParse(value, provider, DateTimeStyles.None, out var datetimeCurrent))
                         {
                             value = format.Val.HasValue
                                 ? datetimeCurrent.ToString(format.Val.Value, provider)
